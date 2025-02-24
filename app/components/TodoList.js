@@ -2,33 +2,22 @@
 
 import { useState, useEffect } from 'react';
 
-export default function Home() {
-  // Store our tasks and new task input
+export default function TodoList() {
   const [taskList, setTaskList] = useState([]);
   const [taskInput, setTaskInput] = useState('');
-  const [isClient, setIsClient] = useState(false);
-
-  // Set isClient to true when component mounts
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
 
   // Load saved tasks when the app starts
   useEffect(() => {
-    if (isClient) {
-      const savedTasks = localStorage.getItem('tasks');
-      if (savedTasks) {
-        setTaskList(JSON.parse(savedTasks));
-      }
+    const savedTasks = localStorage.getItem('tasks');
+    if (savedTasks) {
+      setTaskList(JSON.parse(savedTasks));
     }
-  }, [isClient]);
+  }, []);
 
   // Save tasks whenever they change
   useEffect(() => {
-    if (isClient) {
-      localStorage.setItem('tasks', JSON.stringify(taskList));
-    }
-  }, [taskList, isClient]);
+    localStorage.setItem('tasks', JSON.stringify(taskList));
+  }, [taskList]);
 
   // Add a new task to the list
   const handleAddTask = (e) => {
@@ -56,15 +45,10 @@ export default function Home() {
     setTaskList(taskList.filter(task => task.id !== id));
   };
 
-  // Only render content after hydration
-  if (!isClient) {
-    return null;
-  }
-
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 transition-colors duration-200">
-      <div className="max-w-lg mx-auto bg-white rounded-xl shadow-sm p-8 transition-all duration-200 hover:shadow-md">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">My Tasks</h1>
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-12 px-4 transition-colors duration-200">
+      <div className="max-w-lg mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-sm p-8 transition-all duration-200 hover:shadow-md">
+        <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-8 text-center">My Tasks</h1>
         
         <form onSubmit={handleAddTask} className="mb-8">
           <div className="flex gap-3">
@@ -73,7 +57,7 @@ export default function Home() {
               value={taskInput}
               onChange={(e) => setTaskInput(e.target.value)}
               placeholder="What do you need to do?"
-              className="flex-1 px-4 py-3 bg-gray-50 border-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 placeholder-gray-400 transition-all duration-200"
+              className="flex-1 px-4 py-3 bg-gray-50 dark:bg-gray-700 border-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 dark:text-white text-gray-800 placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-200"
             />
             <button
               type="submit"
@@ -89,16 +73,16 @@ export default function Home() {
           {taskList.map(task => (
             <li
               key={task.id}
-              className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg group transition-all duration-200 hover:shadow-sm"
+              className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg group transition-all duration-200 hover:shadow-sm"
             >
               <input
                 type="checkbox"
                 checked={task.completed}
                 onChange={() => handleToggleTask(task.id)}
-                className="w-5 h-5 border-2 border-gray-300 rounded-md checked:bg-blue-500 checked:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors duration-200 cursor-pointer"
+                className="w-5 h-5 border-2 border-gray-300 dark:border-gray-600 rounded-md checked:bg-blue-500 checked:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-700 transition-colors duration-200 cursor-pointer"
               />
               <span
-                className={`flex-1 text-gray-700 transition-all duration-200 ${task.completed ? 'line-through text-gray-400' : ''}`}
+                className={`flex-1 text-gray-700 dark:text-gray-200 transition-all duration-200 ${task.completed ? 'line-through text-gray-400 dark:text-gray-500' : ''}`}
               >
                 {task.text}
               </span>
@@ -116,7 +100,7 @@ export default function Home() {
         </ul>
 
         {taskList.length === 0 && (
-          <p className="text-center text-gray-400 mt-8 text-lg">
+          <p className="text-center text-gray-400 dark:text-gray-500 mt-8 text-lg">
             No tasks yet - time to be productive!
           </p>
         )}

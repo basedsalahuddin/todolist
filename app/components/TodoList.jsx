@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
-export default function Home() {
-  // Store our tasks and new task input
+export default function TodoList() {
   const [taskList, setTaskList] = useState([]);
   const [taskInput, setTaskInput] = useState('');
   const [isClient, setIsClient] = useState(false);
@@ -11,17 +10,12 @@ export default function Home() {
   // Set isClient to true when component mounts
   useEffect(() => {
     setIsClient(true);
-  }, []);
-
-  // Load saved tasks when the app starts
-  useEffect(() => {
-    if (isClient) {
-      const savedTasks = localStorage.getItem('tasks');
-      if (savedTasks) {
-        setTaskList(JSON.parse(savedTasks));
-      }
+    // Load saved tasks when the component mounts
+    const savedTasks = localStorage.getItem('tasks');
+    if (savedTasks) {
+      setTaskList(JSON.parse(savedTasks));
     }
-  }, [isClient]);
+  }, []);
 
   // Save tasks whenever they change
   useEffect(() => {
@@ -56,7 +50,6 @@ export default function Home() {
     setTaskList(taskList.filter(task => task.id !== id));
   };
 
-  // Only render content after hydration
   if (!isClient) {
     return null;
   }
